@@ -7,10 +7,10 @@ A modern **Salesforce DX** application repository built using standard `force-ap
 ## 📌 Project Architecture
 
 - **Project Type:** Salesforce DX (`sfdx-project.json`)
-- **Package Directory:** [`force-app`](file:///Volumes/MacDisk/Salesforce/personalORG/force-app)
+- **Package Directory:** [`force-app`](./force-app)
 - **Source API Version:** `63.0`
-- **Orchestration Tool:** [CumulusCI (`cumulusci.yml`)](file:///Volumes/MacDisk/Salesforce/personalORG/cumulusci.yml)
-- **Scratch Org Definition:** [`config/project-scratch-def.json`](file:///Volumes/MacDisk/Salesforce/personalORG/config/project-scratch-def.json)
+- **Orchestration Tool:** [CumulusCI (`cumulusci.yml`)](./cumulusci.yml)
+- **Scratch Org Definition:** [`config/project-scratch-def.json`](./config/project-scratch-def.json)
 
 ---
 
@@ -48,7 +48,7 @@ CumulusCI (CCI) automates creating isolated scratch orgs for development, qualit
 
 ### Scratch Org Configurations
 
-All scratch orgs are generated using [`config/project-scratch-def.json`](file:///Volumes/MacDisk/Salesforce/personalORG/config/project-scratch-def.json):
+All scratch orgs are generated using [`config/project-scratch-def.json`](./config/project-scratch-def.json):
 
 | Org Alias     | Duration | Purpose                                                               | Command to Build                  |
 | :------------ | :------- | :-------------------------------------------------------------------- | :-------------------------------- |
