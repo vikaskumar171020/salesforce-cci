@@ -1,0 +1,17 @@
+{
+  "orgName": "AgentForce company",
+  "edition": "Developer",
+  "features": ["EnableSetPasswordInApi", "ServiceCloud", "Chatbot"],
+  "hasSampleData": true,
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    },
+    "mobileSettings": {
+      "enableS1EncryptedStoragePref2": false
+    },
+    "einsteinGptSettings": {
+      "enableEinsteinGptPlatform": true
+    }
+  }
+}

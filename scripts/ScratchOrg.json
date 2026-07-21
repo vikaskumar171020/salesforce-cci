@@ -1,0 +1,24 @@
+{
+  "status": 0,
+  "result": {
+    "id": "00DHy000000eK4NMAU",
+    "devHubId": "vikaskumar@devhub2.com",
+    "apiVersion": "64.0",
+    "accessToken": "00DHy000000eK4N!ARoAQL9WuJxjyG.PXq8TBWCihYWQsV7v2qNCs8ouSg6wPFRVy9y5dImcKtU.eCC22Erb62Yob7djdkSM8I4PmW5rSvQWRX3y",
+    "instanceUrl": "https://page-innovation-112-dev-ed.scratch.my.salesforce.com",
+    "username": "test-phh6nwzvtahz@example.com",
+    "clientId": "PlatformCLI",
+    "password": "aAsrtmw&du4pt",
+    "status": "Active",
+    "expirationDate": "2025-07-28",
+    "createdBy": "vikaskumar@devhub2.com",
+    "edition": "Developer",
+    "orgName": "AgentForce company",
+    "createdDate": "2025-06-28T19:50:31.000+0000",
+    "signupUsername": "test-phh6nwzvtahz@example.com",
+    "alias": "LearningOrg"
+  },
+  "warnings": [
+    "This command will expose sensitive information that allows for subsequent activity using your current authenticated session.\nSharing this information is equivalent to logging someone in under the current credential, resulting in unintended access and escalation of privilege.\nFor additional information, please review the authorization section of the https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_web_flow.htm."
+  ]
+}
