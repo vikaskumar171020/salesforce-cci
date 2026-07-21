@@ -43,6 +43,7 @@ tasks:
   run_tests:
     options:
       required_org_code_coverage_percent: 85
+      test_level: RunLocalTests
 
 flows:
   dev_setup:
@@ -68,3 +69,13 @@ flows:
         flow: ci_feature
       2:
         task: run_tests
+
+  full_ci:
+    description: "Complete CI validation flow: builds scratch org, deploys metadata, runs Apex unit tests and Robot UI tests."
+    steps:
+      1:
+        flow: ci_feature
+      2:
+        task: run_tests
+      3:
+        task: robot

@@ -50,13 +50,13 @@ CumulusCI (CCI) automates creating isolated scratch orgs for development, qualit
 
 All scratch orgs are generated using [`config/project-scratch-def.json`](./config/project-scratch-def.json):
 
-| Org Alias     | Duration | Purpose                                                               | Command to Build                  |
-| :------------ | :------- | :-------------------------------------------------------------------- | :-------------------------------- |
-| **`dev`**     | 7 days   | Main development scratch org for building and testing unmanaged code. | `npm run cci:dev`                 |
-| **`qa`**      | 7 days   | Quality assurance org for verifying features before merging.          | `npm run cci:qa`                  |
-| **`feature`** | 1 day    | Short-lived scratch org for feature branch testing and PR validation. | `npm run cci:feature`             |
-| **`beta`**    | 1 day    | Pre-release and beta package verification org.                        | `cci org scratch beta beta`       |
-| **`release`** | 1 day    | Final release packaging and validation org.                           | `cci org scratch release release` |
+| Org Alias     | Duration | Purpose                                                               | Command to Build      |
+| :------------ | :------- | :-------------------------------------------------------------------- | :-------------------- |
+| **`dev`**     | 30 days  | Main development scratch org for building and testing unmanaged code. | `npm run cci:dev`     |
+| **`qa`**      | 30 days  | Quality assurance org for verifying features before merging.          | `npm run cci:qa`      |
+| **`feature`** | 1 day    | Short-lived scratch org for feature branch testing and PR validation. | `npm run cci:feature` |
+| **`beta`**    | 1 day    | Pre-release and beta package verification org.                        | `npm run cci:beta`    |
+| **`release`** | 30 days  | Final release packaging and validation org.                           | `npm run cci:release` |
 
 ---
 
@@ -129,21 +129,31 @@ All CumulusCI and Salesforce CLI workflows can be triggered via `npm` scripts:
 | **Build QA Org + Apex Tests**   | `npm run cci:qa:full`  | `cci flow run qa_setup --org qa`             |
 | **Build Feature Scratch Org**   | `npm run cci:feature`  | `cci flow run ci_feature --org feature`      |
 | **Run CI Feature Flow + Tests** | `npm run cci:ci`       | `cci flow run ci_feature_test --org feature` |
+| **Build Beta Scratch Org**      | `npm run cci:beta`     | `cci flow run dev_org --org beta`            |
+| **Build Release Scratch Org**   | `npm run cci:release`  | `cci flow run dev_org --org release`         |
 
 ### Scratch Org Lifecycle Management
 
-| Action                         | NPM Command                      | Underlying Command                |
-| :----------------------------- | :------------------------------- | :-------------------------------- |
-| **Create Dev Scratch Org**     | `npm run cci:org:create:dev`     | `cci org scratch dev dev`         |
-| **Create QA Scratch Org**      | `npm run cci:org:create:qa`      | `cci org scratch qa qa`           |
-| **Create Feature Scratch Org** | `npm run cci:org:create:feature` | `cci org scratch feature feature` |
-| **Open Dev Org in Browser**    | `npm run cci:org:open`           | `cci org browser dev`             |
-| **Open QA Org in Browser**     | `npm run cci:org:open:qa`        | `cci org browser qa`              |
-| **View Dev Org Info**          | `npm run cci:org:info`           | `cci org info dev`                |
-| **View QA Org Info**           | `npm run cci:org:info:qa`        | `cci org info qa`                 |
-| **List All Active Orgs**       | `npm run cci:org:list`           | `cci org list`                    |
-| **Delete Dev Scratch Org**     | `npm run cci:org:delete`         | `cci org scratch_delete dev`      |
-| **Delete QA Scratch Org**      | `npm run cci:org:delete:qa`      | `cci org scratch_delete qa`       |
+| Action                          | NPM Command                      | Underlying Command                |
+| :------------------------------ | :------------------------------- | :-------------------------------- |
+| **Create Dev Scratch Org**      | `npm run cci:org:create:dev`     | `cci org scratch dev dev`         |
+| **Create QA Scratch Org**       | `npm run cci:org:create:qa`      | `cci org scratch qa qa`           |
+| **Create Feature Scratch Org**  | `npm run cci:org:create:feature` | `cci org scratch feature feature` |
+| **Create Beta Scratch Org**     | `npm run cci:org:create:beta`    | `cci org scratch beta beta`       |
+| **Create Release Scratch Org**  | `npm run cci:org:create:release` | `cci org scratch release release` |
+| **Open Dev Org in Browser**     | `npm run cci:org:open`           | `cci org browser dev`             |
+| **Open QA Org in Browser**      | `npm run cci:org:open:qa`        | `cci org browser qa`              |
+| **Open Beta Org in Browser**    | `npm run cci:org:open:beta`      | `cci org browser beta`            |
+| **Open Release Org in Browser** | `npm run cci:org:open:release`   | `cci org browser release`         |
+| **View Dev Org Info**           | `npm run cci:org:info`           | `cci org info dev`                |
+| **View QA Org Info**            | `npm run cci:org:info:qa`        | `cci org info qa`                 |
+| **View Beta Org Info**          | `npm run cci:org:info:beta`      | `cci org info beta`               |
+| **View Release Org Info**       | `npm run cci:org:info:release`   | `cci org info release`            |
+| **List All Active Orgs**        | `npm run cci:org:list`           | `cci org list`                    |
+| **Delete Dev Scratch Org**      | `npm run cci:org:delete`         | `cci org scratch_delete dev`      |
+| **Delete QA Scratch Org**       | `npm run cci:org:delete:qa`      | `cci org scratch_delete qa`       |
+| **Delete Beta Scratch Org**     | `npm run cci:org:delete:beta`    | `cci org scratch_delete beta`     |
+| **Delete Release Scratch Org**  | `npm run cci:org:delete:release` | `cci org scratch_delete release`  |
 
 ### Code Quality, Linting & Formatting
 
