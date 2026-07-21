@@ -1,26 +1,70 @@
 minimum_cumulusci_version: "4.10.0"
+
 project:
-    name: personalORG
-    package:
-        name: personalORG
-        namespace: Vikas_Student17
-        api_version: "66.0"
-    git:
-        default_branch: "main"
-    source_format: sfdx
+  name: AgentForceCRM
+  package:
+    name: AgentForceCRM
+    namespace: Vikas_Student17
+    api_version: "66.0"
+  git:
+    default_branch: "main"
+  source_format: sfdx
+
+orgs:
+  scratch:
+    dev:
+      config_file: config/project-scratch-def.json
+      days: 7
+    feature:
+      config_file: config/project-scratch-def.json
+      days: 1
+    qa:
+      config_file: config/project-scratch-def.json
+      days: 7
+    beta:
+      config_file: config/project-scratch-def.json
+      days: 1
+    release:
+      config_file: config/project-scratch-def.json
+      days: 1
 
 tasks:
-    robot:
-        options:
-            suites: robot/personalORG/tests
-            options:
-                outputdir: robot/personalORG/results
+  robot:
+    options:
+      suites: robot/AgentForceCRM/tests
+      options:
+        outputdir: robot/AgentForceCRM/results
 
-    robot_testdoc:
-        options:
-            path: robot/personalORG/tests
-            output: robot/personalORG/doc/personalORG_tests.html
+  robot_testdoc:
+    options:
+      path: robot/AgentForceCRM/tests
+      output: robot/AgentForceCRM/doc/AgentForceCRM_tests.html
 
-    run_tests:
-        options:
-            required_org_code_coverage_percent: 85
+  run_tests:
+    options:
+      required_org_code_coverage_percent: 85
+
+flows:
+  dev_setup:
+    description: "Set up dev scratch org, deploy source metadata, and run Apex unit tests."
+    steps:
+      1:
+        flow: dev_org
+      2:
+        task: run_tests
+
+  qa_setup:
+    description: "Set up QA scratch org, deploy unmanaged metadata, and run unit tests."
+    steps:
+      1:
+        flow: qa_org
+      2:
+        task: run_tests
+
+  ci_feature_test:
+    description: "CI flow for feature branches: builds feature org, deploys unmanaged source, and runs Apex tests."
+    steps:
+      1:
+        flow: ci_feature
+      2:
+        task: run_tests

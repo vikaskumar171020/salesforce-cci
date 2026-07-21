@@ -1,4 +1,4 @@
-# Antigravity Workspace Guidelines for Salesforce DX (personalORG)
+# Antigravity Workspace Guidelines for Salesforce DX (AgentForce CRM)
 
 ## Project Overview
 

@@ -1,8 +1,8 @@
 {
-  "name": "salesforce-app",
+  "name": "agentforce-crm",
   "private": true,
   "version": "1.0.0",
-  "description": "Salesforce App",
+  "description": "AgentForce CRM Salesforce Application",
   "scripts": {
     "lint": "eslint **/{aura,lwc}/**/*.js --no-error-on-unmatched-pattern",
     "test": "npm run test:unit",
@@ -13,7 +13,25 @@
     "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "postinstall": "husky install",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "cci:dev": "cci flow run dev_org --org dev",
+    "cci:dev:full": "cci flow run dev_setup --org dev",
+    "cci:qa": "cci flow run qa_org --org qa",
+    "cci:qa:full": "cci flow run qa_setup --org qa",
+    "cci:feature": "cci flow run ci_feature --org feature",
+    "cci:ci": "cci flow run ci_feature_test --org feature",
+    "cci:org:create:dev": "cci org scratch dev dev",
+    "cci:org:create:qa": "cci org scratch qa qa",
+    "cci:org:create:feature": "cci org scratch feature feature",
+    "cci:org:info": "cci org info dev",
+    "cci:org:info:qa": "cci org info qa",
+    "cci:org:open": "cci org browser dev",
+    "cci:org:open:qa": "cci org browser qa",
+    "cci:org:delete": "cci org scratch_delete dev",
+    "cci:org:delete:qa": "cci org scratch_delete qa",
+    "cci:org:list": "cci org list",
+    "cci:test:apex": "cci task run run_tests --org dev",
+    "cci:test:robot": "cci task run robot --org dev"
   },
   "devDependencies": {
     "@lwc/eslint-plugin-lwc": "^2.0.0",
