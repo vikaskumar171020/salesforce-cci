@@ -32,13 +32,32 @@ Before running CumulusCI workflows, complete the following prerequisites:
 3. **Connect CumulusCI to Dev Hub:**
 
    ```bash
-   cci service connect devhub --project
+   cci service connect devhub --username devhub --project
    ```
 
 4. **Install Node Dependencies:**
    ```bash
    npm install
    ```
+
+### 🔑 Dev Hub Service Management Commands
+
+- **Check Active Dev Hub Connection:**
+  ```bash
+  cci service info devhub
+  ```
+- **List All Connected CCI Services:**
+  ```bash
+  cci service list
+  ```
+- **Connect / Switch Dev Hub Service:**
+  ```bash
+  cci service connect devhub --username <devhub-alias> --project
+  ```
+- **Disconnect Dev Hub Service:**
+  ```bash
+  cci service disconnect devhub
+  ```
 
 ---
 
