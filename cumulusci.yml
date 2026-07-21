@@ -1,0 +1,26 @@
+minimum_cumulusci_version: "4.10.0"
+project:
+  name: personalORG
+  package:
+    name: personalORG
+    namespace: payment-app
+    api_version: "66.0"
+  git:
+    default_branch: "main"
+  source_format: sfdx
+
+tasks:
+  robot:
+    options:
+      suites: robot/personalORG/tests
+      options:
+        outputdir: robot/personalORG/results
+
+  robot_testdoc:
+    options:
+      path: robot/personalORG/tests
+      output: robot/personalORG/doc/personalORG_tests.html
+
+  run_tests:
+    options:
+      required_org_code_coverage_percent: 85
