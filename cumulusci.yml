@@ -14,19 +14,19 @@ orgs:
   scratch:
     dev:
       config_file: config/project-scratch-def.json
-      days: 7
+      days: 30
     feature:
       config_file: config/project-scratch-def.json
       days: 1
     qa:
       config_file: config/project-scratch-def.json
-      days: 7
+      days: 30
     beta:
       config_file: config/project-scratch-def.json
       days: 1
     release:
       config_file: config/project-scratch-def.json
-      days: 1
+      days: 30
 
 tasks:
   robot:
