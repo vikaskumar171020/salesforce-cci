@@ -35,20 +35,8 @@ tasks:
 
 flows:
   dev_setup:
-    description: "Set up dev scratch org, deploy source metadata, and run Apex unit tests."
-    steps:
-      1:
-        flow: dev_org
-      2:
-        task: run_tests
-
-  qa_setup:
-    description: "Set up QA scratch org, deploy unmanaged metadata, and run unit tests."
-    steps:
-      1:
-        flow: dev_org
-      2:
-        task: run_tests
+    description: "Create dev scratch org using config/project-scratch-def.json."
+    steps: {}
 
   ci_feature_test:
     description: "CI flow for feature branches: builds feature org, deploys unmanaged source, and runs Apex tests."
