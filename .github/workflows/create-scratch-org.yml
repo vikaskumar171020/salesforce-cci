@@ -2,6 +2,10 @@ name: Create Scratch Org on Feature Branch
 
 on:
   create:
+  push:
+    branches:
+      - 'feature/*'
+      - 'feature/**'
   workflow_dispatch:
 
 jobs:
@@ -33,7 +37,7 @@ jobs:
       - name: Authenticate Dev Hub Org & Setup CCI Key
         env:
           DEVHUB_AUTH_URL: ${{ secrets.DEVHUB_AUTH_URL }}
-          CUMULUSCI_KEY: "0123456789abcdef0123456789abcdef"
+          CUMULUSCI_KEY: "1234567890abcdef"
         run: |
           if [ -z "$DEVHUB_AUTH_URL" ]; then
             echo "::error::DEVHUB_AUTH_URL secret is not set."
@@ -46,7 +50,7 @@ jobs:
 
       - name: Create Scratch Org & Run Dev Setup (CCI Dev)
         env:
-          CUMULUSCI_KEY: "0123456789abcdef0123456789abcdef"
+          CUMULUSCI_KEY: "1234567890abcdef"
         run: |
           cci org scratch dev dev
           cci flow run dev_setup --org dev
@@ -54,7 +58,7 @@ jobs:
       - name: Generate Scratch Org Password & Export Credentials
         if: always()
         env:
-          CUMULUSCI_KEY: "0123456789abcdef0123456789abcdef"
+          CUMULUSCI_KEY: "1234567890abcdef"
         run: |
           # Generate password for the admin user in the scratch org
           sf org generate password --target-org dev || true
