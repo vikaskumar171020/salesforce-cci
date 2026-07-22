@@ -2,10 +2,6 @@ name: Create Scratch Org on Feature Branch
 
 on:
   create:
-  push:
-    branches:
-      - 'feature/*'
-      - 'feature/**'
   workflow_dispatch:
 
 jobs:
@@ -56,7 +52,6 @@ jobs:
         env:
           CUMULUSCI_KEY: "1234567890abcdef"
         run: |
-          cci org scratch dev dev
           cci flow run dev_setup --org dev
 
       - name: Check Org Info, Generate Password & Export Markdown Credentials
@@ -84,20 +79,27 @@ jobs:
             SCRATCH_USERNAME="AgentForceCRM__dev"
           fi
 
-          # 3. Generate password using the copied/extracted username
+          # 3. Generate password using the extracted username
           echo "## 🔐 Password Generation Output" >> scratch_org_credentials.md
           echo '```text' >> scratch_org_credentials.md
           sf org generate password --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
           echo '```' >> scratch_org_credentials.md
           echo "" >> scratch_org_credentials.md
 
-          # 4. Retrieve org display credentials using the copied username (sf org display --target-org <username>)
-          echo "## 🔑 Scratch Org Credentials (\`sf org display --target-org $SCRATCH_USERNAME\`)" >> scratch_org_credentials.md
+          # 4. Show User Password using sf org auth show-user-password
+          echo "## 🔑 User Password (\`sf org auth show-user-password --target-org $SCRATCH_USERNAME\`)" >> scratch_org_credentials.md
+          echo '```text' >> scratch_org_credentials.md
+          sf org auth show-user-password --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
+          echo '```' >> scratch_org_credentials.md
+          echo "" >> scratch_org_credentials.md
+
+          # 5. Retrieve org display credentials using the username (sf org display --target-org <username>)
+          echo "## 🌐 Scratch Org Display Details (\`sf org display --target-org $SCRATCH_USERNAME\`)" >> scratch_org_credentials.md
           echo '```text' >> scratch_org_credentials.md
           sf org display --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
           echo '```' >> scratch_org_credentials.md
 
-          # 5. Output to step logs & GitHub Job Summary
+          # 6. Output to step logs & GitHub Job Summary
           cat scratch_org_credentials.md || true
           cat scratch_org_credentials.md >> $GITHUB_STEP_SUMMARY
 
