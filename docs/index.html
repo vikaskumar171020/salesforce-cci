@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentForce CRM Documentation — Salesforce DX & CumulusCI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header">
+    <a href="#" class="brand-title">
+      <div class="brand-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.5 19.5 22 15l-4.5-4.5"/><path d="M6.5 4.5 2 9l4.5 4.5"/><path d="M14.5 4.5 9.5 19.5"/></svg>
+      </div>
+      <span>AgentForce CRM Docs</span>
+    </a>
+    <div class="header-controls">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="docs-search" placeholder="Search documentation...">
+      </div>
+      <a href="https://github.com/vikaskumar171020/salesforce-cci" target="_blank" class="badge badge-salesforce" style="text-decoration: none; padding: 6px 14px;">View GitHub Repo ↗</a>
+    </div>
+  </header>
+
+  <!-- Docs Container -->
+  <div class="docs-container">
+
+    <!-- Sidebar -->
+    <aside class="docs-sidebar">
+      <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a href="#overview" class="nav-link active">Overview & Architecture</a>
+        <a href="#prerequisites" class="nav-link">Prerequisites</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Dev Hub Setup</div>
+        <a href="#devhub-auth" class="nav-link">Dev Hub Authentication</a>
+        <a href="#github-secret" class="nav-link">GitHub Secret Configuration</a>
+        <a href="#switch-devhub" class="nav-link">Switching Dev Hub Orgs</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">CI/CD Automation</div>
+        <a href="#workflow-overview" class="nav-link">GitHub Actions Workflow</a>
+        <a href="#admin-email" class="nav-link">Admin Email Injection</a>
+        <a href="#credentials-md" class="nav-link">Credentials Markdown File</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Testing & Quality</div>
+        <a href="#apex-testing" class="nav-link">Apex Unit Testing</a>
+        <a href="#lwc-jest" class="nav-link">LWC Jest Testing</a>
+        <a href="#robot-framework" class="nav-link">Robot Framework E2E</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Reference</div>
+        <a href="#troubleshooting" class="nav-link">Troubleshooting & FAQ</a>
+        <a href="#command-reference" class="nav-link">Command Quick Reference</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="docs-main">
+
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <h1 class="hero-title">AgentForce CRM</h1>
+        <p class="hero-subtitle">Enterprise Salesforce DX application repository fully orchestrated with CumulusCI (CCI), automated GitHub Actions scratch org provisioning, Apex testing, and Robot E2E UI automation.</p>
+        <div class="hero-badges">
+          <span class="badge badge-salesforce">Salesforce API 66.0</span>
+          <span class="badge badge-cci">CumulusCI 4.10.0</span>
+          <span class="badge badge-actions">GitHub Actions Automated</span>
+        </div>
+      </div>
+
+      <!-- Section: Overview -->
+      <section id="overview" class="doc-section">
+        <h2 class="section-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-salesforce)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          Overview & Architecture
+        </h2>
+        <p class="section-lead">The AgentForce CRM architecture combines standard Salesforce DX source format (`force-app`) with CumulusCI (CCI) flow orchestration and GitHub Actions automation.</p>
+        
+        <div class="feature-grid">
+          <div class="card">
+            <div class="card-icon">⚡</div>
+            <div class="card-title">Salesforce DX</div>
+            <div class="card-desc">Organized using standard `force-app` metadata format targeting API Version 66.0.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">☁️</div>
+            <div class="card-title">CumulusCI Orchestration</div>
+            <div class="card-desc">Configured via `cumulusci.yml` to automate org creation, metadata deployment, and profile setup.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🤖</div>
+            <div class="card-title">GitHub Actions Workflow</div>
+            <div class="card-desc">On-demand scratch org creation with custom admin email, password generation, and markdown export.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Dev Hub Setup -->
+      <section id="devhub-auth" class="doc-section">
+        <h2 class="section-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Dev Hub Authentication & Secret Setup
+        </h2>
+        <p class="section-lead">Before running automated scratch org workflows on GitHub Actions, complete the one-time authentication between Salesforce Dev Hub and GitHub Secrets.</p>
+
+        <div class="alert alert-info">
+          <div>
+            <div class="alert-title">Prerequisite CLI Tools</div>
+            <div class="alert-content">Ensure you have Salesforce CLI (`sf`), CumulusCI (`cci`), and GitHub CLI (`gh`) installed on your workstation.</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Step 1: Authenticate Dev Hub Locally</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre>sf org login web --set-default-dev-hub --alias MyDevHub</pre>
+        </div>
+
+        <h3 id="github-secret" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Step 2: Export SFDX Auth URL & Set GitHub Secret</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre># 1. Retrieve the SFDX Auth URL credential string
+sf org auth show-sfdx-auth-url --target-org MyDevHub --json
+
+# 2. Store the secret in your GitHub repository using GitHub CLI (gh)
+gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<your_copied_auth_url>"</pre>
+        </div>
+
+        <h3 id="switch-devhub" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Step 3: How to Switch / Change Dev Hub Orgs</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">To point GitHub Actions to a new Dev Hub org in the future, simply authenticate the new org and update the `DEVHUB_AUTH_URL` secret:</p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre>sf org login web --set-default-dev-hub --alias NewDevHub
+sf org auth show-sfdx-auth-url --target-org NewDevHub --json
+gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<new_auth_url>"</pre>
+        </div>
+      </section>
+
+      <!-- Section: GitHub Actions Workflow -->
+      <section id="workflow-overview" class="doc-section">
+        <h2 class="section-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          GitHub Actions Scratch Org Workflow
+        </h2>
+        <p class="section-lead">The workflow defined in <code>.github/workflows/create-scratch-org.yml</code> allows team members to provision scratch orgs on demand.</p>
+
+        <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Running the Workflow</h3>
+        
+        <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Option A: Via GitHub CLI (Command Line)</strong></p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre>gh workflow run create-scratch-org.yml -f adminEmail="developer@company.com"</pre>
+        </div>
+
+        <p style="color: var(--text-secondary); margin-bottom: 0.5rem; margin-top: 1rem;"><strong>Option B: Via GitHub Web UI</strong></p>
+        <ol style="margin-left: 1.5rem; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.8;">
+          <li>Navigate to your GitHub repository ➔ <strong>Actions</strong> tab.</li>
+          <li>Select <strong>Create Scratch Org with CumulusCI</strong>.</li>
+          <li>Click <strong>Run workflow</strong>, type your email into <code>Admin Email for the scratch org</code>, and click <strong>Run workflow</strong>.</li>
+        </ol>
+
+        <h3 id="admin-email" style="margin-top: 2rem; margin-bottom: 0.5rem;">Dynamic Admin Email Injection</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Before scratch org creation, the workflow dynamically updates <code>config/project-scratch-def.json</code> using <code>jq</code>:</p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">YAML / Bash</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre>- name: Inject Admin Email into Scratch Org Definition
+  if: ${{ inputs.adminEmail != '' }}
+  run: |
+    jq --arg email "${{ inputs.adminEmail }}" '.adminEmail = $email' config/project-scratch-def.json > temp_def.json
+    mv temp_def.json config/project-scratch-def.json</pre>
+        </div>
+
+        <h3 id="credentials-md" style="margin-top: 2rem; margin-bottom: 0.5rem;">Generated Markdown Credentials File</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Upon completion, the workflow generates <code>scratch_org_credentials.md</code> and commits it directly back to the active feature branch with <code>[skip ci]</code>:</p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">Markdown Output Sample</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre># 🚀 Scratch Org Details & Credentials
+
+## 📊 CumulusCI Dev Org Info
+[CCI Org Info]
+
+## 🔐 Password Generation Output
+Successfully generated password for test-user@example.com
+
+## 🔑 User Password (`sf org auth show-user-password`)
+User Name: test-user@example.com
+Password:  YourSecurePassword123!
+
+## 🌐 Scratch Org Display Details (`sf org display`)
+Org ID:       00DHE000003AJPR2A4
+Instance URL: https://connect-force-4524-dev-ed.scratch.my.salesforce.com
+Login URL:    https://connect-force-4524-dev-ed.scratch.my.salesforce.com/secur/frontdoor.jsp?sid=...</pre>
+        </div>
+      </section>
+
+      <!-- Section: Testing -->
+      <section id="apex-testing" class="doc-section">
+        <h2 class="section-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Testing & Quality Assurance Workflows
+        </h2>
+
+        <div class="feature-grid">
+          <div class="card" id="lwc-jest">
+            <div class="card-title">1. Apex Unit Tests (On-Org)</div>
+            <div class="card-desc" style="margin-bottom: 1rem;">Executed in scratch orgs with an enforced 85% code coverage threshold.</div>
+            <div class="code-block" style="margin: 0;">
+              <pre style="padding: 6px;">npm run cci:test:apex</pre>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">2. LWC Unit Tests (Off-Org)</div>
+            <div class="card-desc" style="margin-bottom: 1rem;">Executed off-org using `@salesforce/sfdx-lwc-jest`.</div>
+            <div class="code-block" style="margin: 0;">
+              <pre style="padding: 6px;">npm test</pre>
+            </div>
+          </div>
+          <div class="card" id="robot-framework">
+            <div class="card-title">3. Robot Framework UI Tests</div>
+            <div class="card-desc" style="margin-bottom: 1rem;">End-to-end browser automation in `robot/AgentForceCRM/tests`.</div>
+            <div class="code-block" style="margin: 0;">
+              <pre style="padding: 6px;">npm run cci:test:robot</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Troubleshooting -->
+      <section id="troubleshooting" class="doc-section">
+        <h2 class="section-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-rose)" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Troubleshooting & FAQ Guide
+        </h2>
+
+        <div class="accordion">
+          
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>Issue: ProblemDeployingSettings (EinsteinGpt: Not available for deploy)</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <p><strong>Cause:</strong> Developer Edition Dev Hub orgs do not support <code>einsteinGptSettings</code> in scratch org definition files.</p>
+              <p><strong>Fix:</strong> Remove <code>einsteinGptSettings</code> from <code>config/project-scratch-def.json</code>.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>Issue: 'utf-8' codec can't decode byte 0x80 in position 0</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <p><strong>Cause:</strong> In headless Linux CI environments, CumulusCI requires an explicit 16-character encryption key for keychain storage.</p>
+              <p><strong>Fix:</strong> Pass <code>CUMULUSCI_KEY: "1234567890abcdef"</code> in workflow environment variables.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>Issue: INVALID_AUTH_HEADER / Expired session during org setup</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <p><strong>Cause:</strong> Generating a password mid-flow invalidates active OAuth tokens.</p>
+              <p><strong>Fix:</strong> Set <code>set_password: false</code> under <code>orgs.scratch.dev</code> in <code>cumulusci.yml</code> and generate the password <em>after</em> deployment completes.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <span>Issue: Duplicate Scratch Orgs created in a single run</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-body">
+              <p><strong>Cause:</strong> Calling <code>cci org info dev</code> in a separate script step evaluates <code>dev</code> as an unbuilt scratch org config, triggering a 2nd creation.</p>
+              <p><strong>Fix:</strong> Use <code>sf org display --target-org "$SCRATCH_USERNAME"</code> to query org details without creating extra orgs.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="docs-footer">
+        <div>AgentForce CRM Documentation © 2026 — Salesforce DX & CumulusCI</div>
+        <div>Built for GitHub Pages</div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Copied to clipboard!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>

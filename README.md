@@ -92,7 +92,54 @@ CumulusCI flows orchestrate multi-step deployment and setup routines:
 
 ---
 
-## 🧪 Testing & Quality Assurance Workflows
+## 🤖 GitHub Actions Scratch Org Workflow
+
+This repository includes a manual GitHub Actions workflow ([`.github/workflows/create-scratch-org.yml`](./.github/workflows/create-scratch-org.yml)) that provisions a scratch org using CumulusCI (`dev_setup` flow), configures a custom admin email, generates the admin user password, and outputs full credentials into `scratch_org_credentials.md`.
+
+### 🔑 GitHub Actions Prerequisites & Secret Setup
+
+Before running the workflow, save your Dev Hub credentials as a GitHub secret:
+
+1. **Export Dev Hub SFDX Auth URL:**
+   ```bash
+   sf org auth show-sfdx-auth-url --target-org <YourDevHubAlias> --json
+   ```
+
+2. **Set `DEVHUB_AUTH_URL` Secret via GitHub CLI (`gh`):**
+   ```bash
+   gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<your_sfdx_auth_url>"
+   ```
+
+3. **Switching / Changing Dev Hub Orgs:**
+   To switch to a different Dev Hub org:
+   ```bash
+   sf org login web --set-default-dev-hub --alias MyNewDevHub
+   sf org auth show-sfdx-auth-url --target-org MyNewDevHub --json
+   gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<new_sfdx_auth_url>"
+   ```
+
+### 🚀 Running the Workflow
+
+#### Option A: Via GitHub CLI (`gh`)
+```bash
+gh workflow run create-scratch-org.yml -f adminEmail="admin@yourcompany.com"
+```
+
+#### Option B: Via GitHub Web UI
+1. Navigate to **Actions** tab on GitHub.
+2. Select **Create Scratch Org with CumulusCI** workflow.
+3. Click **Run workflow**, enter your **Admin Email** in the prompt, and click **Run workflow**.
+
+### 📄 Generated Credential Files & Outputs
+Once execution completes, the workflow:
+- Generates **`scratch_org_credentials.md`** containing:
+  - `cci org info dev` output.
+  - `sf org generate password` output.
+  - `sf org auth show-user-password` (username and password).
+  - `sf org display` (Org ID, Instance URL, Direct Login URL).
+- Commits `scratch_org_credentials.md` directly back to the active feature branch.
+- Renders the credentials in the GitHub Actions Job Summary.
+
 
 This project employs a multi-layered testing strategy across Apex, Lightning Web Components (LWC), and Browser UI.
 

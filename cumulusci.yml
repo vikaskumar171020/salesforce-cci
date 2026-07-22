@@ -15,18 +15,6 @@ orgs:
     dev:
       config_file: config/project-scratch-def.json
       days: 30
-    feature:
-      config_file: config/project-scratch-def.json
-      days: 1
-    qa:
-      config_file: config/project-scratch-def.json
-      days: 30
-    beta:
-      config_file: config/project-scratch-def.json
-      days: 1
-    release:
-      config_file: config/project-scratch-def.json
-      days: 30
 
 tasks:
   robot:
@@ -58,7 +46,7 @@ flows:
     description: "Set up QA scratch org, deploy unmanaged metadata, and run unit tests."
     steps:
       1:
-        flow: qa_org
+        flow: dev_org
       2:
         task: run_tests
 
