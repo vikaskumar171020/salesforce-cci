@@ -12,10 +12,14 @@ jobs:
   create-scratch-org:
     name: Create Scratch Org with CumulusCI (CCI Dev)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -55,29 +59,59 @@ jobs:
           cci org scratch dev dev
           cci flow run dev_setup --org dev
 
-      - name: Generate Scratch Org Password & Export Credentials
+      - name: Check Org Info, Generate Password & Export Markdown Credentials
         if: always()
         env:
           CUMULUSCI_KEY: "1234567890abcdef"
         run: |
-          # Generate password for the admin user in the scratch org
-          sf org generate password --target-org dev || true
-          
-          # Write full org details (Username, Password, Org ID, Instance URL, Login URL) to txt file
-          sf org display --target-org dev > scratch_org_credentials.txt || true
-          
-          # Display in step log
-          cat scratch_org_credentials.txt || true
+          # Initialize markdown file
+          echo "# 🚀 Scratch Org Details & Credentials" > scratch_org_credentials.md
+          echo "" >> scratch_org_credentials.md
 
-          # Output formatted credentials to GitHub Job Summary for instant view
-          echo "### 🔑 Scratch Org Credentials & Login Info" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          cat scratch_org_credentials.txt >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          # 1. Output CumulusCI Dev Org Info
+          echo "## 📊 CumulusCI Dev Org Info" >> scratch_org_credentials.md
+          echo '```text' >> scratch_org_credentials.md
+          cci org info dev >> scratch_org_credentials.md 2>&1 || true
+          echo '```' >> scratch_org_credentials.md
+          echo "" >> scratch_org_credentials.md
 
-      - name: Upload Scratch Org Credentials Artifact
+          # 2. Extract scratch org username dynamically
+          SCRATCH_USERNAME=$(sf org display --target-org AgentForceCRM__dev --json 2>/dev/null | jq -r '.result.username // empty')
+          if [ -z "$SCRATCH_USERNAME" ]; then
+            SCRATCH_USERNAME=$(sf org display --target-org dev --json 2>/dev/null | jq -r '.result.username // empty')
+          fi
+          if [ -z "$SCRATCH_USERNAME" ]; then
+            SCRATCH_USERNAME="AgentForceCRM__dev"
+          fi
+
+          # 3. Generate password using the copied/extracted username
+          echo "## 🔐 Password Generation Output" >> scratch_org_credentials.md
+          echo '```text' >> scratch_org_credentials.md
+          sf org generate password --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
+          echo '```' >> scratch_org_credentials.md
+          echo "" >> scratch_org_credentials.md
+
+          # 4. Retrieve org display credentials using the copied username (sf org display --target-org <username>)
+          echo "## 🔑 Scratch Org Credentials (\`sf org display --target-org $SCRATCH_USERNAME\`)" >> scratch_org_credentials.md
+          echo '```text' >> scratch_org_credentials.md
+          sf org display --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
+          echo '```' >> scratch_org_credentials.md
+
+          # 5. Output to step logs & GitHub Job Summary
+          cat scratch_org_credentials.md || true
+          cat scratch_org_credentials.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit & Push Credentials Markdown File to Branch
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: scratch-org-credentials
-          path: scratch_org_credentials.txt
+        run: |
+          if [ -f scratch_org_credentials.md ] && [ -s scratch_org_credentials.md ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add scratch_org_credentials.md
+            if git diff --staged --quiet; then
+              echo "No credential changes to commit."
+            else
+              git commit -m "ci: save scratch org credentials markdown [skip ci]"
+              git push origin HEAD:${{ github.ref }}
+            fi
+          fi
