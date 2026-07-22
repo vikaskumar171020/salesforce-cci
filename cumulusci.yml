@@ -15,18 +15,23 @@ orgs:
     dev:
       config_file: config/project-scratch-def.json
       days: 30
+      set_password: false
     feature:
       config_file: config/project-scratch-def.json
       days: 1
+      set_password: false
     qa:
       config_file: config/project-scratch-def.json
       days: 30
+      set_password: false
     beta:
       config_file: config/project-scratch-def.json
       days: 1
+      set_password: false
     release:
       config_file: config/project-scratch-def.json
       days: 30
+      set_password: false
 
 tasks:
   robot:
