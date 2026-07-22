@@ -1,8 +1,12 @@
-name: Create Scratch Org on Feature Branch
+name: Create Scratch Org with CumulusCI
 
 on:
-  create:
   workflow_dispatch:
+    inputs:
+      adminEmail:
+        description: 'Admin Email for the scratch org'
+        required: true
+        type: string
 
 jobs:
   create-scratch-org:
@@ -33,6 +37,14 @@ jobs:
           npm ci || npm install
           npm install -g @salesforce/cli
           pip install cumulusci
+
+      - name: Inject Admin Email into Scratch Org Definition
+        if: ${{ inputs.adminEmail != '' }}
+        run: |
+          echo "Setting scratch org admin email to: ${{ inputs.adminEmail }}"
+          jq --arg email "${{ inputs.adminEmail }}" '.adminEmail = $email' config/project-scratch-def.json > temp_def.json
+          mv temp_def.json config/project-scratch-def.json
+          cat config/project-scratch-def.json
 
       - name: Authenticate Dev Hub Org & Setup CCI Key
         env:
