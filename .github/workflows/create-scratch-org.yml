@@ -46,6 +46,7 @@ jobs:
           sf org login sfdx-url --sfdx-url-file devhub_url.txt --set-default-dev-hub --alias DevHub
           rm -f devhub_url.txt
           cci service connect devhub --username DevHub --project
+          cci org info devhub
 
       - name: Create Scratch Org & Run Dev Setup (CCI Dev)
         run: |
