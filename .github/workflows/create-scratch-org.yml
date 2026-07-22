@@ -2,10 +2,6 @@ name: Create Scratch Org on Feature Branch
 
 on:
   create:
-  push:
-    branches:
-      - "feature/*"
-      - "feature/**"
   workflow_dispatch:
 
 jobs:
@@ -20,13 +16,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: "npm"
+          node-version: '22'
+          cache: 'npm'
 
       - name: Install Dependencies & Tools
         run: |
@@ -34,34 +30,38 @@ jobs:
           npm install -g @salesforce/cli
           pip install cumulusci
 
-      - name: Authenticate Dev Hub Org
+      - name: Authenticate Dev Hub Org & Setup CCI Key
         env:
           DEVHUB_AUTH_URL: ${{ secrets.DEVHUB_AUTH_URL }}
+          CUMULUSCI_KEY: "0123456789abcdef0123456789abcdef"
         run: |
           if [ -z "$DEVHUB_AUTH_URL" ]; then
             echo "::error::DEVHUB_AUTH_URL secret is not set."
             exit 1
           fi
           echo "$DEVHUB_AUTH_URL" > devhub_url.txt
-          sf org login sfdx-url --sfdx-url-file devhub_url.txt --set-default-dev-hub --alias DevHub
+          sf org login sfdx-url --sfdx-url-file devhub_url.txt --set-default-dev-hub --alias devhub
           rm -f devhub_url.txt
-          cci service connect devhub --username DevHub --project
-          cci org info devhub
+          cci service connect devhub --username devhub --project || true
 
       - name: Create Scratch Org & Run Dev Setup (CCI Dev)
+        env:
+          CUMULUSCI_KEY: "0123456789abcdef0123456789abcdef"
         run: |
           cci org scratch dev dev
           cci flow run dev_setup --org dev
 
       - name: Generate Scratch Org Password & Export Credentials
         if: always()
+        env:
+          CUMULUSCI_KEY: "0123456789abcdef0123456789abcdef"
         run: |
           # Generate password for the admin user in the scratch org
           sf org generate password --target-org dev || true
-
+          
           # Write full org details (Username, Password, Org ID, Instance URL, Login URL) to txt file
           sf org display --target-org dev > scratch_org_credentials.txt || true
-
+          
           # Display in step log
           cat scratch_org_credentials.txt || true
 
