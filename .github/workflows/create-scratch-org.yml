@@ -2,13 +2,10 @@ name: Create Scratch Org on Feature Branch
 
 on:
   create:
-    branches:
-      - 'feature/*'
-      - 'feature/**'
   push:
     branches:
-      - 'feature/*'
-      - 'feature/**'
+      - "feature/*"
+      - "feature/**"
   workflow_dispatch:
 
 jobs:
@@ -23,13 +20,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Install Dependencies & Tools
         run: |
@@ -55,7 +52,27 @@ jobs:
           cci org scratch dev dev
           cci flow run dev_setup --org dev
 
-      - name: Display Scratch Org Summary
+      - name: Generate Scratch Org Password & Export Credentials
         if: always()
         run: |
-          cci org info dev || true
+          # Generate password for the admin user in the scratch org
+          sf org generate password --target-org dev || true
+
+          # Write full org details (Username, Password, Org ID, Instance URL, Login URL) to txt file
+          sf org display --target-org dev > scratch_org_credentials.txt || true
+
+          # Display in step log
+          cat scratch_org_credentials.txt || true
+
+          # Output formatted credentials to GitHub Job Summary for instant view
+          echo "### 🔑 Scratch Org Credentials & Login Info" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat scratch_org_credentials.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Scratch Org Credentials Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scratch-org-credentials
+          path: scratch_org_credentials.txt
