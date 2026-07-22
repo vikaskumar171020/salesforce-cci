@@ -64,8 +64,8 @@ jobs:
         env:
           CUMULUSCI_KEY: "1234567890abcdef"
         run: |
-          # 1. Create scratch org, deploy source metadata, and run Apex unit tests
-          cci flow run dev_setup --org dev
+          # 1. Create scratch org and deploy org settings
+          cci flow run feature_org --org dev
 
           # 2. Initialize markdown file
           echo "# 🚀 Scratch Org Details & Credentials" > scratch_org_credentials.md

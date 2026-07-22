@@ -84,7 +84,7 @@ All scratch orgs are generated using [`config/project-scratch-def.json`](./confi
 CumulusCI flows orchestrate multi-step deployment and setup routines:
 
 - **`dev_org`**: Provisions a `dev` scratch org, deploys unmanaged `force-app` metadata, and applies administrator profile configurations.
-- **`dev_setup`**: Custom flow that builds the `dev_org` environment and immediately runs all Apex unit tests to ensure environment integrity.
+- **`feature_org`**: Custom flow that provisions a dev scratch org and deploys org settings.
 - **`qa_org`**: Provisions a `qa` scratch org and deploys source metadata for quality assurance.
 - **`qa_setup`**: Builds `qa_org` and executes full test validation.
 - **`ci_feature`**: CI flow for feature branch validation (deploys unmanaged metadata into a `feature` org).

@@ -34,6 +34,10 @@ tasks:
       test_level: RunLocalTests
 
 flows:
-  dev_setup:
-    description: "Create dev scratch org using config/project-scratch-def.json."
-    steps: {}
+  feature_org:
+    description: "Custom feature org setup: creates scratch org and deploys org settings only."
+    steps:
+      1:
+        task: org_settings
+        options:
+          definition_file: config/project-scratch-def.json

@@ -15,7 +15,7 @@
     "postinstall": "husky install",
     "precommit": "lint-staged",
     "cci:dev": "cci flow run dev_org --org dev",
-    "cci:dev:full": "cci flow run dev_setup --org dev",
+    "cci:dev:full": "cci flow run feature_org --org dev",
     "cci:qa": "cci flow run qa_org --org qa",
     "cci:qa:full": "cci flow run qa_setup --org qa",
     "cci:feature": "cci flow run ci_feature --org feature",

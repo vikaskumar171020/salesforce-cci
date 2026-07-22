@@ -164,7 +164,7 @@ gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<new_auth_url>"</pre>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
           GitHub Actions Scratch Org Workflow
         </h2>
-        <p class="section-lead">The workflow defined in <code>.github/workflows/create-scratch-org.yml</code> allows team members to provision scratch orgs on demand.</p>
+        <p class="section-lead">This repository includes a manual GitHub Actions workflow ([`.github/workflows/create-scratch-org.yml`](./.github/workflows/create-scratch-org.yml)) that provisions a scratch org using CumulusCI (`feature_org` flow), configures a custom admin email, generates the admin user password, and outputs full credentials into `scratch_org_credentials.md`.</p>
 
         <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Running the Workflow</h3>
         
