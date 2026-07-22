@@ -1,0 +1,62 @@
+name: Create Scratch Org on Feature Branch
+
+on:
+  create:
+    branches:
+      - 'feature/*'
+      - 'feature/**'
+  push:
+    branches:
+      - 'feature/*'
+      - 'feature/**'
+  workflow_dispatch:
+
+jobs:
+  create-scratch-org:
+    name: Create Scratch Org with CumulusCI (CCI Dev)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies & Tools
+        run: |
+          npm ci || npm install
+          npm install -g @salesforce/cli
+          pip install cumulusci
+
+      - name: Authenticate Dev Hub Org
+        env:
+          DEVHUB_AUTH_URL: ${{ secrets.DEVHUB_AUTH_URL }}
+        run: |
+          if [ -z "$DEVHUB_AUTH_URL" ]; then
+            echo "::error::DEVHUB_AUTH_URL secret is not set. Please set it using GitHub CLI: gh secret set DEVHUB_AUTH_URL"
+            exit 1
+          fi
+          echo "$DEVHUB_AUTH_URL" > devhub_url.txt
+          sf org login sfdx-url --sfdx-url-file devhub_url.txt --set-default-dev-hub --alias DevHub
+          rm -f devhub_url.txt
+          cci service connect devhub --username DevHub --project
+
+      - name: Create Scratch Org & Run Dev Setup (CCI Dev)
+        run: |
+          cci org scratch dev dev
+          cci flow run dev_setup --org dev
+
+      - name: Display Scratch Org Summary
+        if: always()
+        run: |
+          cci org info dev
