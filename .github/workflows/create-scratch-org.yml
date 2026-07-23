@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      SF_TEMP_SHOW_SECRETS: "true"
 
     steps:
       - name: Checkout Repository
