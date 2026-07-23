@@ -101,11 +101,13 @@ This repository includes a manual GitHub Actions workflow ([`.github/workflows/c
 Before running the workflow, save your Dev Hub credentials as a GitHub secret:
 
 1. **Export Dev Hub SFDX Auth URL:**
+
    ```bash
    sf org auth show-sfdx-auth-url --target-org <YourDevHubAlias> --json
    ```
 
 2. **Set `DEVHUB_AUTH_URL` Secret via GitHub CLI (`gh`):**
+
    ```bash
    gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<your_sfdx_auth_url>"
    ```
@@ -121,17 +123,21 @@ Before running the workflow, save your Dev Hub credentials as a GitHub secret:
 ### 🚀 Running the Workflow
 
 #### Option A: Via GitHub CLI (`gh`)
+
 ```bash
 gh workflow run create-scratch-org.yml -f adminEmail="admin@yourcompany.com"
 ```
 
 #### Option B: Via GitHub Web UI
+
 1. Navigate to **Actions** tab on GitHub.
 2. Select **Create Scratch Org with CumulusCI** workflow.
 3. Click **Run workflow**, enter your **Admin Email** in the prompt, and click **Run workflow**.
 
 ### 📄 Generated Credential Files & Outputs
+
 Once execution completes, the workflow:
+
 - Generates **`scratch_org_credentials.md`** containing:
   - `cci flow run feature_org --org dev` org setup output.
   - `sf org generate password` output.
@@ -139,7 +145,6 @@ Once execution completes, the workflow:
   - `sf org display` (Org ID, Instance URL, Direct Login URL).
 - Commits `scratch_org_credentials.md` directly back to the active feature branch content (not as an artifact).
 - Renders the credentials in the GitHub Actions Job Summary.
-
 
 This project employs a multi-layered testing strategy across Apex, Lightning Web Components (LWC), and Browser UI.
 

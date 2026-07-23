@@ -33,7 +33,9 @@ gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<your_copied_auth_url
 ```
 
 ### Switching Dev Hub Orgs
+
 To switch the Dev Hub used by GitHub Actions in the future:
+
 ```bash
 sf org login web --set-default-dev-hub --alias NewDevHub
 sf org auth show-sfdx-auth-url --target-org NewDevHub --json
@@ -47,11 +49,13 @@ gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<new_auth_url>"
 The workflow is configured with `workflow_dispatch` and requires an `adminEmail` parameter.
 
 ### Via GitHub CLI:
+
 ```bash
 gh workflow run create-scratch-org.yml -f adminEmail="admin@company.com"
 ```
 
 ### Via GitHub Web UI:
+
 1. Go to **Actions** ➔ **Create Scratch Org with CumulusCI**.
 2. Click **Run workflow**.
 3. Enter your **Admin Email** in the prompt and click **Run workflow**.
@@ -61,6 +65,7 @@ gh workflow run create-scratch-org.yml -f adminEmail="admin@company.com"
 ## 📄 Output Credential File (`scratch_org_credentials.md`)
 
 When execution completes, the workflow generates `scratch_org_credentials.md` containing:
+
 - CumulusCI Feature Org Setup Output (`cci flow run feature_org --org dev`)
 - Password Generation Output (`sf org generate password --target-org <username>`)
 - User Password Output (`sf org auth show-user-password --target-org <username>`)
@@ -82,6 +87,7 @@ The file is automatically committed to your branch (`ci: save scratch org creden
 ## 🌐 GitHub Pages Publishing Instructions
 
 To enable GitHub Pages for this repository:
+
 1. Go to your repository settings on GitHub: `https://github.com/vikaskumar171020/salesforce-cci/settings/pages`
 2. Under **Build and deployment** ➔ **Source**, select **Deploy from a branch**.
 3. Under **Branch**, select `main` and folder `/docs`.
