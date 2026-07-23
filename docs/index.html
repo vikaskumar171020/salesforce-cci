@@ -356,8 +356,9 @@ gh workflow run create-scratch-org.yml -f adminEmail="developer@company.com"</pr
           </h3>
           <p style="color: var(--text-secondary); font-size: 0.9rem">
             Upon completion, the workflow generates
-            <code>scratch_org_credentials.md</code> and commits it directly back
-            to the active feature branch content with <code>[skip ci]</code>:
+            <code>scratch_org_credentials.md</code> with clean tables and no
+            ANSI escape codes, committing it directly back to the active feature
+            branch content with <code>[skip ci]</code>:
           </p>
           <div class="code-block">
             <div class="code-header">
@@ -367,20 +368,36 @@ gh workflow run create-scratch-org.yml -f adminEmail="developer@company.com"</pr
             <pre>
 # 🚀 Scratch Org Details & Credentials
 
-## 📊 CumulusCI Dev Org Info
-[CCI Org Info]
+## 📋 Org Information
 
-## 🔐 Password Generation Output
-Successfully generated password for test-user@example.com
+| Field | Value |
+| :--- | :--- |
+| **Alias** | `dev` |
+| **Status** | `Active` |
+| **Org Name** | `Simulated Scratch Org` |
+| **Org ID** | `00D000000000001AAA` |
+| **Username** | `test-simulated-user@example.com` |
+| **Password** | `SimulatedSecretPassword123!` |
+| **Instance URL** | `https://simulated-scratch-domain-dev-ed.scratch.my.salesforce.com` |
+| **API Version** | `63.0` |
+| **Created Date** | `2026-07-23T23:55:00.000+0000` |
+| **Expire Date** | `2026-08-22` |
 
-## 🔑 User Password (`sf org auth show-user-password`)
-User Name: test-user@example.com
-Password:  YourSecurePassword123!
+---
 
-## 🌐 Scratch Org Display Details (`sf org display`)
-Org ID:       00DHE000003AJPR2A4
-Instance URL: https://connect-force-4524-dev-ed.scratch.my.salesforce.com
-Login URL:    https://connect-force-4524-dev-ed.scratch.my.salesforce.com/secur/frontdoor.jsp?sid=...</pre>
+## 🔑 CLI Auth Token (SFDX Auth URL)
+
+```text
+force://PlatformCLI::EXAMPLE_MOCK_TOKEN...
+```
+
+---
+
+## 🚀 How to Authenticate this Org in Salesforce CLI (`sf`)
+
+```bash
+echo "force://PlatformCLI::..." | sf org login sfdx-url --sfdx-url-stdin --alias dev --set-default
+```</pre>
           </div>
         </section>
 
@@ -402,8 +419,23 @@ Login URL:    https://connect-force-4524-dev-ed.scratch.my.salesforce.com/secur/
           </h2>
 
           <div class="feature-grid">
+            <div class="card" id="workflow-test">
+              <div class="card-title">1. Local GitHub Workflow Test</div>
+              <div class="card-desc" style="margin-bottom: 1rem">
+                Test GitHub Actions workflow pipeline locally without creating
+                scratch orgs or consuming org quota.
+              </div>
+              <div class="code-block">
+                <div class="code-header">
+                  <span class="code-lang">Bash</span>
+                  <button class="copy-btn">Copy</button>
+                </div>
+                <pre>npm run test:workflow</pre>
+              </div>
+            </div>
+
             <div class="card" id="lwc-jest">
-              <div class="card-title">1. Apex Unit Tests (On-Org)</div>
+              <div class="card-title">2. Apex Unit Tests (On-Org)</div>
               <div class="card-desc" style="margin-bottom: 1rem">
                 Executed in scratch orgs with an enforced 85% code coverage
                 threshold.

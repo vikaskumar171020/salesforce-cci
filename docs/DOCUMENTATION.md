@@ -66,12 +66,34 @@ gh workflow run create-scratch-org.yml -f adminEmail="admin@company.com"
 
 When execution completes, the workflow generates `scratch_org_credentials.md` containing:
 
-- CumulusCI Feature Org Setup Output (`cci flow run feature_org --org dev`)
-- Password Generation Output (`sf org generate password --target-org <username>`)
-- User Password Output (`sf org auth show-user-password --target-org <username>`)
-- Org Display Details (`sf org display --target-org <username>`)
+- **Org Information Table**: Clean breakdown of Alias, Status, Org Name, Org ID, Username, Password, Instance URL, API Version, Created Date, Expire Date.
+- **CLI Auth Token (`force://...`)**: Retreived via `sf org auth show-sfdx-auth-url`.
+- **CLI Authentication Instructions**: Step-by-step terminal commands for logging into the org on any machine.
 
-The file is automatically committed to your branch (`ci: save scratch org credentials markdown file [skip ci]`) and appended to the GitHub Job Summary.
+The file strips ANSI control codes, is automatically committed to your branch (`ci: save scratch org credentials markdown file [skip ci]`), and is rendered in the GitHub Actions Job Summary.
+
+---
+
+## 🧪 Local GitHub Workflow Pipeline Testing (`npm run test:workflow`)
+
+To validate the GitHub workflow logic locally without creating scratch orgs or making cloud CLI calls:
+
+```bash
+npm run test:workflow
+```
+
+Or directly via shell:
+
+```bash
+./scripts/test-workflow-locally.sh
+```
+
+### Technical Implementation:
+
+- **Org Creation Bypass**: Mocks `cci` so `cci flow run feature_org --org dev` executes as a no-op, preserving your daily Scratch Org limit.
+- **CLI Data Simulation**: Intercepts `sf org display`, `sf org generate password`, `sf org auth show-user-password`, and `sf org auth show-sfdx-auth-url` with mock JSON data.
+- **Dynamic Script Extraction**: Parses `.github/workflows/create-scratch-org.yml` at runtime to extract the actual bash script step so local tests never drift from CI.
+- **Automated Validation Suite**: Checks for clean formatting, absence of ANSI escape characters, table completeness, valid `force://` auth token structure, and CLI login instructions.
 
 ---
 
@@ -81,6 +103,7 @@ The file is automatically committed to your branch (`ci: save scratch org creden
 2. **`CUMULUSCI_KEY: "1234567890abcdef"`**: Fixes Python's `keyrings.alt` pickle decoding error in headless Linux CI environments.
 3. **Removed `einsteinGptSettings`**: Resolves `ProblemDeployingSettings` error in Developer edition Dev Hubs.
 4. **Unified Workflow Step**: Combines org creation, setup, password generation, and markdown export into a single step to prevent duplicate scratch org creations.
+5. **Local Pipeline Simulator (`test:workflow`)**: Provides an offline test harness to verify workflow Markdown generation logic safely.
 
 ---
 
