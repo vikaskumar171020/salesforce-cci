@@ -11,6 +11,7 @@ on:
 jobs:
   create-scratch-org:
     name: Create Scratch Org with CumulusCI (CCI Dev)
+    if: github.ref_name != 'main' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -18,6 +19,13 @@ jobs:
       SF_TEMP_SHOW_SECRETS: "true"
 
     steps:
+      - name: Prevent Execution on Main Branch
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ] || [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "::error::Creating scratch orgs directly on the 'main' branch is prohibited. Please run this workflow on a feature branch."
+            exit 1
+          fi
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
