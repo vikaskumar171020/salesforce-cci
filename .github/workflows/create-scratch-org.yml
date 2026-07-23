@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       adminEmail:
-        description: 'Admin Email for the scratch org'
+        description: "Admin Email for the scratch org"
         required: true
         type: string
 
@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      SF_TEMP_SHOW_SECRETS: "true"
 
     steps:
       - name: Checkout Repository
@@ -24,13 +26,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Install Dependencies & Tools
         run: |
@@ -64,14 +66,10 @@ jobs:
         env:
           CUMULUSCI_KEY: "1234567890abcdef"
         run: |
-          # 1. Create scratch org, deploy source metadata, and run Apex unit tests
-          cci flow run dev_setup --org dev
+          # 1. Create scratch org and deploy org settings using CumulusCI
+          cci flow run feature_org --org dev
 
-          # 2. Initialize markdown file
-          echo "# 🚀 Scratch Org Details & Credentials" > scratch_org_credentials.md
-          echo "" >> scratch_org_credentials.md
-
-          # 3. Extract scratch org username dynamically from created org
+          # 2. Extract scratch org username dynamically from created org
           SCRATCH_USERNAME=$(sf org display --target-org AgentForceCRM__dev --json 2>/dev/null | jq -r '.result.username // empty')
           if [ -z "$SCRATCH_USERNAME" ]; then
             SCRATCH_USERNAME=$(sf org display --target-org dev --json 2>/dev/null | jq -r '.result.username // empty')
@@ -80,25 +78,93 @@ jobs:
             SCRATCH_USERNAME="AgentForceCRM__dev"
           fi
 
-          # 4. Generate password using the extracted username
-          echo "## 🔐 Password Generation Output" >> scratch_org_credentials.md
-          echo '```text' >> scratch_org_credentials.md
-          sf org generate password --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
-          echo '```' >> scratch_org_credentials.md
-          echo "" >> scratch_org_credentials.md
+          # 3. Generate password for the user
+          sf org generate password --target-org "$SCRATCH_USERNAME" --json >/dev/null 2>&1 || true
 
-          # 5. Show User Password using sf org auth show-user-password
-          echo "## 🔑 User Password (\`sf org auth show-user-password --target-org $SCRATCH_USERNAME\`)" >> scratch_org_credentials.md
-          echo '```text' >> scratch_org_credentials.md
-          sf org auth show-user-password --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
-          echo '```' >> scratch_org_credentials.md
-          echo "" >> scratch_org_credentials.md
+          # 4. Fetch org details, password, and SFDX Auth URL in JSON format
+          DISPLAY_JSON=$(sf org display --target-org "$SCRATCH_USERNAME" --json 2>/dev/null || echo "{}")
+          PASSWORD_JSON=$(sf org auth show-user-password --target-org "$SCRATCH_USERNAME" --json 2>/dev/null || echo "{}")
+          AUTH_URL_JSON=$(sf org auth show-sfdx-auth-url --target-org "$SCRATCH_USERNAME" --json 2>/dev/null || echo "{}")
 
-          # 6. Retrieve org display credentials using the username (sf org display --target-org <username>)
-          echo "## 🌐 Scratch Org Display Details (\`sf org display --target-org $SCRATCH_USERNAME\`)" >> scratch_org_credentials.md
-          echo '```text' >> scratch_org_credentials.md
-          sf org display --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
-          echo '```' >> scratch_org_credentials.md
+          # 5. Extract values using jq
+          ALIAS=$(echo "$DISPLAY_JSON" | jq -r '.result.alias // "dev"')
+          STATUS=$(echo "$DISPLAY_JSON" | jq -r '.result.status // "Active"')
+          ORG_NAME=$(echo "$DISPLAY_JSON" | jq -r '.result.orgName // "Scratch Org"')
+          ORG_ID=$(echo "$DISPLAY_JSON" | jq -r '.result.id // "N/A"')
+          USERNAME=$(echo "$DISPLAY_JSON" | jq -r '.result.username // "'"$SCRATCH_USERNAME"'"')
+          INSTANCE_URL=$(echo "$DISPLAY_JSON" | jq -r '.result.instanceUrl // "N/A"')
+          API_VERSION=$(echo "$DISPLAY_JSON" | jq -r '.result.apiVersion // "63.0"')
+          CREATED_DATE=$(echo "$DISPLAY_JSON" | jq -r '.result.createdDate // "N/A"')
+          EXPIRATION_DATE=$(echo "$DISPLAY_JSON" | jq -r '.result.expirationDate // "N/A"')
+
+          PASSWORD=$(echo "$PASSWORD_JSON" | jq -r '.result.password // "N/A"')
+          if [ "$PASSWORD" = "null" ] || [ -z "$PASSWORD" ]; then
+            PASSWORD="N/A"
+          fi
+
+          AUTH_URL=$(echo "$AUTH_URL_JSON" | jq -r '.result.sfdxAuthUrl // "N/A"')
+          if [ "$AUTH_URL" = "null" ] || [ -z "$AUTH_URL" ]; then
+            AUTH_URL="N/A"
+          fi
+
+          # 6. Format clean markdown without ANSI escape codes
+          cat <<EOF > scratch_org_credentials.md
+          # 🚀 Scratch Org Details & Credentials
+
+          ## 📋 Org Information
+
+          | Field | Value |
+          | :--- | :--- |
+          | **Alias** | \`$ALIAS\` |
+          | **Status** | \`$STATUS\` |
+          | **Org Name** | \`$ORG_NAME\` |
+          | **Org ID** | \`$ORG_ID\` |
+          | **Username** | \`$USERNAME\` |
+          | **Password** | \`$PASSWORD\` |
+          | **Instance URL** | \`$INSTANCE_URL\` |
+          | **API Version** | \`$API_VERSION\` |
+          | **Created Date** | \`$CREATED_DATE\` |
+          | **Expire Date** | \`$EXPIRATION_DATE\` |
+
+          ---
+
+          ## 🔑 CLI Auth Token (SFDX Auth URL)
+
+          \`\`\`text
+          $AUTH_URL
+          \`\`\`
+
+          ---
+
+          ## 🚀 How to Authenticate this Org in Salesforce CLI (\`sf\`)
+
+          You can authenticate this scratch org on any machine using the \`force://\` SFDX Auth URL with the Salesforce CLI.
+
+          ### Option 1: Authenticate using stdin (Quickest)
+
+          Run the following command in your terminal:
+
+          \`\`\`bash
+          echo "$AUTH_URL" | sf org login sfdx-url --sfdx-url-stdin --alias $ALIAS --set-default
+          \`\`\`
+
+          ### Option 2: Authenticate using a File
+
+          1. Save the auth URL string into a text file, e.g., \`authUrl.txt\`:
+             \`\`\`bash
+             echo "$AUTH_URL" > authUrl.txt
+             \`\`\`
+
+          2. Authorize the org using the file:
+             \`\`\`bash
+             sf org login sfdx-url --sfdx-url-file authUrl.txt --alias $ALIAS --set-default
+             \`\`\`
+
+          3. (Optional) Delete the \`authUrl.txt\` file after authenticating to keep sensitive credentials secure:
+             \`\`\`bash
+             rm authUrl.txt
+             \`\`\`
+          EOF
 
           # 7. Output to step logs & GitHub Job Summary
           cat scratch_org_credentials.md || true
@@ -114,7 +180,7 @@ jobs:
             if git diff --staged --quiet; then
               echo "No credential changes to commit."
             else
-              git commit -m "ci: save scratch org credentials markdown [skip ci]"
+              git commit -m "ci: save scratch org credentials markdown file [skip ci]"
               git push origin HEAD:${{ github.ref }}
             fi
           fi

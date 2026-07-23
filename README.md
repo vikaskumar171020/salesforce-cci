@@ -84,7 +84,7 @@ All scratch orgs are generated using [`config/project-scratch-def.json`](./confi
 CumulusCI flows orchestrate multi-step deployment and setup routines:
 
 - **`dev_org`**: Provisions a `dev` scratch org, deploys unmanaged `force-app` metadata, and applies administrator profile configurations.
-- **`dev_setup`**: Custom flow that builds the `dev_org` environment and immediately runs all Apex unit tests to ensure environment integrity.
+- **`feature_org`**: Custom flow that provisions a dev scratch org and deploys org settings.
 - **`qa_org`**: Provisions a `qa` scratch org and deploys source metadata for quality assurance.
 - **`qa_setup`**: Builds `qa_org` and executes full test validation.
 - **`ci_feature`**: CI flow for feature branch validation (deploys unmanaged metadata into a `feature` org).
@@ -94,18 +94,20 @@ CumulusCI flows orchestrate multi-step deployment and setup routines:
 
 ## 🤖 GitHub Actions Scratch Org Workflow
 
-This repository includes a manual GitHub Actions workflow ([`.github/workflows/create-scratch-org.yml`](./.github/workflows/create-scratch-org.yml)) that provisions a scratch org using CumulusCI (`dev_setup` flow), configures a custom admin email, generates the admin user password, and outputs full credentials into `scratch_org_credentials.md`.
+This repository includes a manual GitHub Actions workflow ([`.github/workflows/create-scratch-org.yml`](./.github/workflows/create-scratch-org.yml)) that provisions a scratch org using CumulusCI (`feature_org` flow), configures a custom admin email, generates the admin user password, and outputs full credentials into `scratch_org_credentials.md`.
 
 ### 🔑 GitHub Actions Prerequisites & Secret Setup
 
 Before running the workflow, save your Dev Hub credentials as a GitHub secret:
 
 1. **Export Dev Hub SFDX Auth URL:**
+
    ```bash
    sf org auth show-sfdx-auth-url --target-org <YourDevHubAlias> --json
    ```
 
 2. **Set `DEVHUB_AUTH_URL` Secret via GitHub CLI (`gh`):**
+
    ```bash
    gh secret set DEVHUB_AUTH_URL --body "force://PlatformCLI::<your_sfdx_auth_url>"
    ```
@@ -121,25 +123,51 @@ Before running the workflow, save your Dev Hub credentials as a GitHub secret:
 ### 🚀 Running the Workflow
 
 #### Option A: Via GitHub CLI (`gh`)
+
 ```bash
 gh workflow run create-scratch-org.yml -f adminEmail="admin@yourcompany.com"
 ```
 
 #### Option B: Via GitHub Web UI
+
 1. Navigate to **Actions** tab on GitHub.
 2. Select **Create Scratch Org with CumulusCI** workflow.
 3. Click **Run workflow**, enter your **Admin Email** in the prompt, and click **Run workflow**.
 
 ### 📄 Generated Credential Files & Outputs
+
 Once execution completes, the workflow:
-- Generates **`scratch_org_credentials.md`** containing:
-  - `cci org info dev` output.
-  - `sf org generate password` output.
-  - `sf org auth show-user-password` (username and password).
-  - `sf org display` (Org ID, Instance URL, Direct Login URL).
-- Commits `scratch_org_credentials.md` directly back to the active feature branch.
+
+- Generates a clean **`scratch_org_credentials.md`** containing:
+  - Structured **Org Information Table** (Alias, Status, Org Name, Org ID, Username, Password, Instance URL, API Version, Created Date, Expire Date).
+  - **CLI Auth Token (`force://...`)** retrieved via `sf org auth show-sfdx-auth-url`.
+  - **CLI Login Instructions** for authenticating the scratch org on any machine.
+- Strips ANSI control characters (`\x1b[...`) for clean Markdown presentation.
+- Commits `scratch_org_credentials.md` directly back to the active feature branch content (not as an artifact).
 - Renders the credentials in the GitHub Actions Job Summary.
 
+---
+
+### 🧪 Local GitHub Workflow Pipeline Testing (`npm run test:workflow`)
+
+To test and validate the GitHub Actions workflow script locally **without consuming your Scratch Org creation quota** or making cloud CLI calls:
+
+```bash
+npm run test:workflow
+```
+
+Or execute the script directly:
+
+```bash
+./scripts/test-workflow-locally.sh
+```
+
+#### How Local Testing Works:
+
+1. **Org Limit Protection**: Mocks the `cci` executable locally so `cci flow run feature_org --org dev` bypasses scratch org creation.
+2. **Mocked JSON Data**: Simulates JSON responses for `sf org display`, `sf org generate password`, `sf org auth show-user-password`, and `sf org auth show-sfdx-auth-url`.
+3. **Dynamic Script Extraction**: Parses `.github/workflows/create-scratch-org.yml` directly so the test always verifies the exact logic defined in your workflow file.
+4. **Validation**: Verifies that `scratch_org_credentials.md` contains no ANSI codes, includes all required fields, valid `force://` SFDX auth tokens, and CLI authentication commands.
 
 This project employs a multi-layered testing strategy across Apex, Lightning Web Components (LWC), and Browser UI.
 
@@ -221,13 +249,14 @@ All CumulusCI and Salesforce CLI workflows can be triggered via `npm` scripts:
 | **Delete Beta Scratch Org**     | `npm run cci:org:delete:beta`    | `cci org scratch_delete beta`     |
 | **Delete Release Scratch Org**  | `npm run cci:org:delete:release` | `cci org scratch_delete release`  |
 
-### Code Quality, Linting & Formatting
+### Code Quality, Testing & Formatting
 
-| Action                       | NPM Command               | Underlying Command                 |
-| :--------------------------- | :------------------------ | :--------------------------------- |
-| **Lint LWC/Aura Code**       | `npm run lint`            | `eslint **/{aura,lwc}/**/*.js ...` |
-| **Format All Project Files** | `npm run prettier`        | `prettier --write ...`             |
-| **Check Code Formatting**    | `npm run prettier:verify` | `prettier --check ...`             |
+| Action                           | NPM Command               | Underlying Command                      |
+| :------------------------------- | :------------------------ | :-------------------------------------- |
+| **Test GitHub Workflow Locally** | `npm run test:workflow`   | `bash scripts/test-workflow-locally.sh` |
+| **Lint LWC/Aura Code**           | `npm run lint`            | `eslint **/{aura,lwc}/**/*.js ...`      |
+| **Format All Project Files**     | `npm run prettier`        | `prettier --write ...`                  |
+| **Check Code Formatting**        | `npm run prettier:verify` | `prettier --check ...`                  |
 
 ---
 
