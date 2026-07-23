@@ -103,7 +103,14 @@ jobs:
           sf org display --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
           echo '```' >> scratch_org_credentials.md
 
-          # 7. Output to step logs & GitHub Job Summary
+          # 7. Redact Access Token & Auth URLs to pass GitHub Push Protection secret scanning
+          sed -E -i 's/(Access Token\s+).*/\1[REDACTED_FOR_SECURITY]/' scratch_org_credentials.md
+          sed -E -i 's/(Sfdx Auth Url\s+).*/\1[REDACTED_FOR_SECURITY]/' scratch_org_credentials.md
+          sed -E -i 's/("accessToken"\s*:\s*")[^"]+/\1[REDACTED_FOR_SECURITY]/g' scratch_org_credentials.md
+          sed -E -i 's/00D[a-zA-Z0-9]+\![a-zA-Z0-9._-]+/[REDACTED_FOR_SECURITY]/g' scratch_org_credentials.md
+          sed -E -i 's/force:\/\/[^\s"'\''`]+/force:\/\/[REDACTED_FOR_SECURITY]/g' scratch_org_credentials.md
+
+          # 8. Output to step logs & GitHub Job Summary
           cat scratch_org_credentials.md || true
           cat scratch_org_credentials.md >> $GITHUB_STEP_SUMMARY
 
