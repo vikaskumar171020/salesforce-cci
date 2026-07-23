@@ -94,7 +94,7 @@ CumulusCI flows orchestrate multi-step deployment and setup routines:
 
 ## 🤖 GitHub Actions Scratch Org Workflow
 
-This repository includes a manual GitHub Actions workflow ([`.github/workflows/create-scratch-org.yml`](./.github/workflows/create-scratch-org.yml)) that provisions a scratch org using CumulusCI (`dev_setup` flow), configures a custom admin email, generates the admin user password, and outputs full credentials into `scratch_org_credentials.md`.
+This repository includes a manual GitHub Actions workflow ([`.github/workflows/create-scratch-org.yml`](./.github/workflows/create-scratch-org.yml)) that provisions a scratch org using CumulusCI (`feature_org` flow), configures a custom admin email, generates the admin user password, and outputs full credentials into `scratch_org_credentials.md`.
 
 ### 🔑 GitHub Actions Prerequisites & Secret Setup
 
@@ -133,11 +133,11 @@ gh workflow run create-scratch-org.yml -f adminEmail="admin@yourcompany.com"
 ### 📄 Generated Credential Files & Outputs
 Once execution completes, the workflow:
 - Generates **`scratch_org_credentials.md`** containing:
-  - `cci org info dev` output.
+  - `cci flow run feature_org --org dev` org setup output.
   - `sf org generate password` output.
   - `sf org auth show-user-password` (username and password).
   - `sf org display` (Org ID, Instance URL, Direct Login URL).
-- Commits `scratch_org_credentials.md` directly back to the active feature branch.
+- Commits `scratch_org_credentials.md` directly back to the active feature branch content (not as an artifact).
 - Renders the credentials in the GitHub Actions Job Summary.
 
 

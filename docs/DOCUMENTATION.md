@@ -10,7 +10,10 @@ This repository orchestrates a **Salesforce DX** project with **CumulusCI (CCI)*
 - **CCI Configuration:** `cumulusci.yml`
 - **Scratch Org Definition:** `config/project-scratch-def.json`
 - **CI/CD Workflow:** `.github/workflows/create-scratch-org.yml`
-- **Output Credential Artifact:** `scratch_org_credentials.md` (committed directly to feature branches)
+- **CCI Configuration:** `cumulusci.yml`
+- **Scratch Org Definition:** `config/project-scratch-def.json`
+- **CI/CD Workflow:** `.github/workflows/create-scratch-org.yml`
+- **Output Credential File:** `scratch_org_credentials.md` (committed directly to feature branches as branch content)
 
 ---
 
@@ -58,12 +61,12 @@ gh workflow run create-scratch-org.yml -f adminEmail="admin@company.com"
 ## 📄 Output Credential File (`scratch_org_credentials.md`)
 
 When execution completes, the workflow generates `scratch_org_credentials.md` containing:
-- CumulusCI Dev Org Info (`cci org info dev`)
+- CumulusCI Feature Org Setup Output (`cci flow run feature_org --org dev`)
 - Password Generation Output (`sf org generate password --target-org <username>`)
 - User Password Output (`sf org auth show-user-password --target-org <username>`)
 - Org Display Details (`sf org display --target-org <username>`)
 
-The file is automatically committed to your branch (`ci: save scratch org credentials markdown [skip ci]`) and appended to the GitHub Job Summary.
+The file is automatically committed to your branch (`ci: save scratch org credentials markdown file [skip ci]`) and appended to the GitHub Job Summary.
 
 ---
 

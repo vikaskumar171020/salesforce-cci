@@ -64,10 +64,10 @@ jobs:
         env:
           CUMULUSCI_KEY: "1234567890abcdef"
         run: |
-          # 1. Create scratch org and deploy org settings
+          # 1. Create scratch org and deploy org settings using CumulusCI (fetches config/project-scratch-def.json)
           cci flow run feature_org --org dev
 
-          # 2. Initialize markdown file
+          # 2. Initialize markdown file for credentials
           echo "# 🚀 Scratch Org Details & Credentials" > scratch_org_credentials.md
           echo "" >> scratch_org_credentials.md
 
@@ -87,15 +87,16 @@ jobs:
           echo '```' >> scratch_org_credentials.md
           echo "" >> scratch_org_credentials.md
 
-          # 5. Show User Password using sf org auth show-user-password
-          echo "## 🔑 User Password (\`sf org auth show-user-password --target-org $SCRATCH_USERNAME\`)" >> scratch_org_credentials.md
+          # 5. Fetch User Password non-interactively
+          echo "## 🔑 User Password Details" >> scratch_org_credentials.md
           echo '```text' >> scratch_org_credentials.md
-          sf org auth show-user-password --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
+          echo "y" | sf org auth show-user-password --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
+          sf org auth show-user-password --target-org "$SCRATCH_USERNAME" --json >> scratch_org_credentials.md 2>&1 || true
           echo '```' >> scratch_org_credentials.md
           echo "" >> scratch_org_credentials.md
 
-          # 6. Retrieve org display credentials using the username (sf org display --target-org <username>)
-          echo "## 🌐 Scratch Org Display Details (\`sf org display --target-org $SCRATCH_USERNAME\`)" >> scratch_org_credentials.md
+          # 6. Retrieve org display credentials using sf command
+          echo "## 🌐 Scratch Org Display Details" >> scratch_org_credentials.md
           echo '```text' >> scratch_org_credentials.md
           sf org display --target-org "$SCRATCH_USERNAME" >> scratch_org_credentials.md 2>&1 || true
           echo '```' >> scratch_org_credentials.md
@@ -114,7 +115,7 @@ jobs:
             if git diff --staged --quiet; then
               echo "No credential changes to commit."
             else
-              git commit -m "ci: save scratch org credentials markdown [skip ci]"
+              git commit -m "ci: save scratch org credentials markdown file [skip ci]"
               git push origin HEAD:${{ github.ref }}
             fi
           fi
