@@ -170,10 +170,61 @@ jobs:
           cat scratch_org_credentials.md || true
           cat scratch_org_credentials.md >> $GITHUB_STEP_SUMMARY
 
+      - name: Send Email with Scratch Org Credentials to Admin
+        if: ${{ inputs.adminEmail != '' }}
+        env:
+          ADMIN_EMAIL: ${{ inputs.adminEmail }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        run: |
+          echo "Preparing credentials notification for $ADMIN_EMAIL..."
+          python3 - <<'EOF'
+          import os, sys, smtplib
+          from email.mime.text import MIMEText
+          from email.mime.multipart import MIMEMultipart
+
+          admin_email = os.environ.get("ADMIN_EMAIL")
+          smtp_server = os.environ.get("SMTP_SERVER")
+          smtp_port = os.environ.get("SMTP_PORT", "587")
+          smtp_user = os.environ.get("SMTP_USERNAME")
+          smtp_pass = os.environ.get("SMTP_PASSWORD")
+
+          if not admin_email or not os.path.exists("scratch_org_credentials.md"):
+              print("Skipping email: Missing admin email or credentials file.")
+              sys.exit(0)
+
+          with open("scratch_org_credentials.md", "r") as f:
+              content = f.read()
+
+          if smtp_server and smtp_user and smtp_pass:
+              try:
+                  msg = MIMEMultipart()
+                  msg['From'] = smtp_user
+                  msg['To'] = admin_email
+                  msg['Subject'] = "🚀 Your Salesforce Scratch Org Credentials"
+                  msg.attach(MIMEText(content, 'plain'))
+
+                  server = smtplib.SMTP(smtp_server, int(smtp_port))
+                  server.starttls()
+                  server.login(smtp_user, smtp_pass)
+                  server.send_message(msg)
+                  server.quit()
+                  print(f"Successfully sent credentials email to {admin_email}")
+              except Exception as e:
+                  print(f"Warning: Failed to send email via SMTP: {e}")
+          else:
+              print(f"SMTP secrets not set. Full credentials are rendered in GitHub Actions Job Summary for {admin_email}.")
+          EOF
+
       - name: Commit & Push Credentials Markdown File to Branch
         if: always()
         run: |
           if [ -f scratch_org_credentials.md ] && [ -s scratch_org_credentials.md ]; then
+            # Redact sensitive force:// auth URLs in the committed file to pass GitHub Push Protection
+            sed -i -E 's/force:\/\/[^\s"`'\''<>]+/force:\/\/[REDACTED_FOR_SECURITY]/g' scratch_org_credentials.md
+
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add scratch_org_credentials.md
