@@ -357,10 +357,10 @@ gh workflow run create-scratch-org.yml -f adminEmail="developer@company.com"</pr
             Generated Credentials Markdown File
           </h3>
           <p style="color: var(--text-secondary); font-size: 0.9rem">
-            Upon completion, the workflow generates
-            <code>scratch_org_credentials.md</code> with clean tables and no
-            ANSI escape codes, committing it directly back to the active feature
-            branch content with <code>[skip ci]</code>:
+            Upon completion, the workflow posts clean credential tables directly
+            to the
+            <strong>GitHub Actions Job Summary</strong> and step logs without
+            modifying or committing files to your branch:
           </p>
           <div class="code-block">
             <div class="code-header">

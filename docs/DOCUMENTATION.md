@@ -70,7 +70,7 @@ When execution completes, the workflow generates `scratch_org_credentials.md` co
 - **CLI Auth Token (`force://...`)**: Retreived via `sf org auth show-sfdx-auth-url`.
 - **CLI Authentication Instructions**: Step-by-step terminal commands for logging into the org on any machine.
 
-The file strips ANSI control codes, is automatically committed to your branch (`ci: save scratch org credentials markdown file [skip ci]`), and is rendered in the GitHub Actions Job Summary.
+The credentials output strips ANSI control codes and is rendered directly in the GitHub Actions Job Summary and step logs without modifying or committing files to your branch.
 
 ---
 
