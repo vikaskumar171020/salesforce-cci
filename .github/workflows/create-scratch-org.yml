@@ -70,12 +70,12 @@ jobs:
           cci flow run feature_org --org dev
 
           # 2. Extract scratch org username dynamically from created org
-          SCRATCH_USERNAME=$(sf org display --target-org AgentForceCRM__dev --json 2>/dev/null | jq -r '.result.username // empty')
+          SCRATCH_USERNAME=$(sf org display --target-org SalesforceCCIAutomation__dev --json 2>/dev/null | jq -r '.result.username // empty')
           if [ -z "$SCRATCH_USERNAME" ]; then
             SCRATCH_USERNAME=$(sf org display --target-org dev --json 2>/dev/null | jq -r '.result.username // empty')
           fi
           if [ -z "$SCRATCH_USERNAME" ]; then
-            SCRATCH_USERNAME="AgentForceCRM__dev"
+            SCRATCH_USERNAME="SalesforceCCIAutomation__dev"
           fi
 
           # 3. Generate password for the user

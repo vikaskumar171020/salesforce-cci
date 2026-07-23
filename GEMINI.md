@@ -1,4 +1,4 @@
-# Antigravity Workspace Guidelines for Salesforce DX (AgentForce CRM)
+# Antigravity Workspace Guidelines for Salesforce DX (Salesforce CCI Automation)
 
 ## Project Overview
 

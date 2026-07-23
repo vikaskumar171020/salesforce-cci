@@ -1,4 +1,4 @@
-# ⚡ AgentForce CRM (Salesforce DX & CumulusCI)
+# ⚡ Salesforce CCI Automation (Salesforce DX & CumulusCI)
 
 A modern **Salesforce DX** application repository built using standard `force-app` source format and fully orchestrated with **CumulusCI (CCI)** (`cumulusci.yml`). This project automates scratch org creation, feature branch builds, metadata deployment, Apex unit testing, LWC Jest testing, and end-to-end Robot Framework testing.
 

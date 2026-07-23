@@ -1,4 +1,4 @@
-# ⚡ AgentForce CRM — Complete GitHub Actions & CumulusCI Technical Guide
+# ⚡ Salesforce CCI Automation — Complete GitHub Actions & CumulusCI Technical Guide
 
 This repository orchestrates a **Salesforce DX** project with **CumulusCI (CCI)** and automated **GitHub Actions workflows**.
 

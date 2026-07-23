@@ -1,9 +1,9 @@
 minimum_cumulusci_version: "4.10.0"
 
 project:
-  name: AgentForceCRM
+  name: SalesforceCCIAutomation
   package:
-    name: AgentForceCRM
+    name: SalesforceCCIAutomation
     namespace: Vikas_Student17
     api_version: "66.0"
   git:
@@ -19,14 +19,14 @@ orgs:
 tasks:
   robot:
     options:
-      suites: robot/AgentForceCRM/tests
+      suites: robot/SalesforceCCIAutomation/tests
       options:
-        outputdir: robot/AgentForceCRM/results
+        outputdir: robot/SalesforceCCIAutomation/results
 
   robot_testdoc:
     options:
-      path: robot/AgentForceCRM/tests
-      output: robot/AgentForceCRM/doc/AgentForceCRM_tests.html
+      path: robot/SalesforceCCIAutomation/tests
+      output: robot/SalesforceCCIAutomation/doc/SalesforceCCIAutomation_tests.html
 
   run_tests:
     options:

@@ -1,5 +1,5 @@
 {
-  "orgName": "AgentForce company",
+  "orgName": "Salesforce CCI company",
   "edition": "Developer",
   "features": ["EnableSetPasswordInApi", "ServiceCloud", "Chatbot"],
   "hasSampleData": true,
